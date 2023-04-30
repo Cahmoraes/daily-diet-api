@@ -19,9 +19,6 @@ type MealBodySchema = z.infer<typeof createMealBodySchema>
 type MealParamSchema = z.infer<typeof createMealParam>
 
 export class CreateMealController {
-  private _request?: FastifyRequest
-  private _reply?: FastifyReply
-
   constructor() {
     this.bindMethod()
   }
