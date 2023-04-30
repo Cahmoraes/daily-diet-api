@@ -13,12 +13,13 @@ const editMealBodySchema = z.object({
 
 const editMealParam = z.object({
   userId: z.string(),
+  mealId: z.string(),
 })
 
 type MealBodySchema = z.infer<typeof editMealBodySchema>
 type MealParamSchema = z.infer<typeof editMealParam>
 
-export class CreateMealController {
+export class EditMealController {
   constructor() {
     this.bindMethod()
   }
@@ -29,10 +30,10 @@ export class CreateMealController {
 
   public async execute(request: FastifyRequest, reply: FastifyReply) {
     const mealBody = this.parseBodyRequestOrThrow(request.body)
-    const { userId } = this.parseParamRequestOrThrow(request.params)
+    const { userId, mealId } = this.parseParamRequestOrThrow(request.params)
 
-    console.log({ userId, mealBody })
-    await this.createMeal({ userId, ...mealBody })
+    console.log({ userId, mealId, mealBody })
+    // await this.createMeal({ userId, ...mealBody })
 
     return reply.status(201).send()
   }
