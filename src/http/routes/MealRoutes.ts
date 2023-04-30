@@ -1,7 +1,7 @@
 import { assert } from '@/utils/assert'
 import { FastifyInstance } from 'fastify'
 import { CreateMealController } from '../controllers/meal/CreateMealController'
-import { EditMealController } from '../controllers/meal/EditMealController'
+import { UpdateMealController } from '../controllers/meal/UpdateMealController'
 
 export class MealRoutes {
   private _app?: FastifyInstance
@@ -21,15 +21,15 @@ export class MealRoutes {
 
   private registerRoutes(): void {
     this.registerCreateMeal()
-    this.registerEditMeal()
+    this.registerUpdateMeal()
   }
 
   private registerCreateMeal(): void {
     this.app.post('/:userId', new CreateMealController().execute)
   }
 
-  private registerEditMeal(): void {
-    this.app.put('/:userId/:mealId', new EditMealController().execute)
+  private registerUpdateMeal(): void {
+    this.app.put('/:userId/:mealId', new UpdateMealController().execute)
   }
 
   get app(): FastifyInstance {

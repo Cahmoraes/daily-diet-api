@@ -1,5 +1,5 @@
 import { MealDTO } from '@/interfaces/MealDTO'
-import { makeCreateMealUseCase } from '@/use-cases/factories/makeCreateMealUseCase'
+import { makeUpdateMealUseCase } from '@/use-cases/factories/makeUpdateMealUseCase'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
@@ -18,8 +18,11 @@ const editMealParam = z.object({
 
 type MealBodySchema = z.infer<typeof editMealBodySchema>
 type MealParamSchema = z.infer<typeof editMealParam>
+type UpdateMealParams = MealDTO & {
+  mealId: string
+}
 
-export class EditMealController {
+export class UpdateMealController {
   constructor() {
     this.bindMethod()
   }
@@ -31,10 +34,7 @@ export class EditMealController {
   public async execute(request: FastifyRequest, reply: FastifyReply) {
     const mealBody = this.parseBodyRequestOrThrow(request.body)
     const { userId, mealId } = this.parseParamRequestOrThrow(request.params)
-
-    console.log({ userId, mealId, mealBody })
-    // await this.createMeal({ userId, ...mealBody })
-
+    await this.createMeal({ userId, mealId, ...mealBody })
     return reply.status(201).send()
   }
 
@@ -46,17 +46,17 @@ export class EditMealController {
     return editMealParam.parse(params)
   }
 
-  private async createMeal(mealDTO: MealDTO) {
+  private async createMeal(updateMealParams: UpdateMealParams) {
     try {
-      await this.performCreateMeal(mealDTO)
+      await this.performCreateMeal(updateMealParams)
     } catch (error) {
       console.log(error)
       throw error
     }
   }
 
-  private async performCreateMeal(mealDTO: MealDTO) {
-    const createMealUseCase = makeCreateMealUseCase()
+  private async performCreateMeal(mealDTO: UpdateMealParams) {
+    const createMealUseCase = makeUpdateMealUseCase()
     createMealUseCase.execute(mealDTO)
   }
 }
