@@ -1,13 +1,18 @@
 import cookie from '@fastify/cookie'
 import jwt from '@fastify/jwt'
-import Fastify, { FastifyError, FastifyReply, FastifyRequest } from 'fastify'
+import Fastify, {
+  FastifyError,
+  FastifyInstance,
+  FastifyReply,
+  FastifyRequest,
+} from 'fastify'
 import { env } from './env'
 import { UserRoutes } from './http/routes/UserRoutes'
 import { MealRoutes } from './http/routes/MealRoutes'
 import { ServerRoutes } from './http/routes/ServerRoutes'
 import { ZodError } from 'zod'
 
-export class ServerApp {
+export class Server {
   private readonly app = Fastify({ logger: false })
   private readonly PORT = env.PORT
   private readonly HOST = '0.0.0.0'
@@ -73,5 +78,13 @@ export class ServerApp {
       host: this.HOST,
     })
     console.log(`HTTP Server Running ON ${this.PORT} 🚀`)
+  }
+
+  public getAppInstanceForTesting(): FastifyInstance {
+    this.registerJWT()
+    this.registerCookie()
+    this.registerRoutes()
+    this.registerErrorHandler()
+    return this.app
   }
 }
