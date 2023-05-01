@@ -1,5 +1,5 @@
 import { MealDTO } from '@/interfaces/MealDTO'
-import { makeUpdateMealUseCase } from '@/use-cases/factories/makeUpdateMealUseCase'
+import { makeUpdateMealUseCase } from '@/use-cases/factories/meal/makeUpdateMealUseCase'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 

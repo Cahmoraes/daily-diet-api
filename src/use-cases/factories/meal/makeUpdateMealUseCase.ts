@@ -1,5 +1,5 @@
 import { PrismaMealRepository } from '@/repositories/prisma/PrismaMealRepository'
-import { UpdateMealUseCase } from '../meal/UpdateMealUseCase'
+import { UpdateMealUseCase } from '../../meal/UpdateMealUseCase'
 
 export function makeUpdateMealUseCase() {
   const mealRepository = new PrismaMealRepository()

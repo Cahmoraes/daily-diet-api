@@ -2,7 +2,7 @@ import { assert } from '@/utils/assert'
 import { randomUUID } from 'node:crypto'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
-import { makeCreateUserUseCase } from '@/use-cases/factories/makeCreateUserUseCase'
+import { makeCreateUserUseCase } from '@/use-cases/factories/user/makeCreateUserUseCase'
 
 const createUserBodySchema = z.object({
   name: z.string(),

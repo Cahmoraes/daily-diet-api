@@ -1,9 +1,21 @@
 import { MealDTO } from '@/interfaces/MealDTO'
-import { MealRepository, MealUpdateParams } from '../MealRepository'
+import {
+  DeleteMealParams,
+  MealRepository,
+  UpdateMealParams,
+} from '../MealRepository'
 import { prisma } from '@/lib/prisma'
 
 export class PrismaMealRepository implements MealRepository {
-  async update(params: MealUpdateParams): Promise<void> {
+  async delete(params: DeleteMealParams): Promise<void> {
+    await prisma.meal.delete({
+      where: {
+        id: params.mealId,
+      },
+    })
+  }
+
+  async update(params: UpdateMealParams): Promise<void> {
     await prisma.meal.update({
       where: {
         id: params.mealId,
