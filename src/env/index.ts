@@ -23,8 +23,6 @@ if (!_env.success) {
 
 export const env = _env.data
 
-console.log('env.DATABASE_URL', env.DATABASE_URL)
-
 export function isEnvironmentDev(): boolean {
   return env.NODE_ENV === 'development'
 }
