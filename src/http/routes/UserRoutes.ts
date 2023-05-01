@@ -2,6 +2,7 @@ import { assert } from '@/utils/assert'
 import { FastifyInstance } from 'fastify'
 import { CreateUserController } from '../controllers/user/CreateUserController'
 import { GetAllMealByUserController } from '../controllers/meal/GetAllMealByUserController'
+import { AuthenticateUserController } from '../controllers/user/AuthenticateUserController'
 
 export class UserRoutes {
   private _app?: FastifyInstance
@@ -31,6 +32,7 @@ export class UserRoutes {
   private registerRoutes(): void {
     this.registerCreateUser()
     this.registerGetAllMealByUser()
+    this.registerAuthenticateUser()
   }
 
   private registerCreateUser() {
@@ -39,5 +41,9 @@ export class UserRoutes {
 
   private registerGetAllMealByUser(): void {
     this.app.get('/:userId/meals', new GetAllMealByUserController().execute)
+  }
+
+  private registerAuthenticateUser(): void {
+    this.app.post('/session', new AuthenticateUserController().execute)
   }
 }

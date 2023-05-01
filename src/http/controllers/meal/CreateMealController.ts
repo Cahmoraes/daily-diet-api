@@ -31,6 +31,9 @@ export class CreateMealController {
     const mealBody = this.parseBodyRequestOrThrow(request.body)
     const { userId } = this.parseParamRequestOrThrow(request.params)
 
+    await request.jwtVerify()
+    console.log(request.headers.authorization)
+
     console.log({ userId, mealBody })
     await this.createMeal({ userId, ...mealBody })
 

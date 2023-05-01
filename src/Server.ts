@@ -1,4 +1,5 @@
 import cookie from '@fastify/cookie'
+import jwt from '@fastify/jwt'
 import Fastify, { FastifyError, FastifyReply, FastifyRequest } from 'fastify'
 import { env } from './env'
 import { UserRoutes } from './http/routes/UserRoutes'
@@ -12,10 +13,17 @@ export class ServerApp {
   private readonly HOST = '0.0.0.0'
 
   public start(): void {
+    this.registerJWT()
     this.registerCookie()
     this.registerRoutes()
     this.registerErrorHandler()
     this.listen()
+  }
+
+  private registerJWT(): void {
+    this.app.register(jwt, {
+      secret: env.JWT_SECRET,
+    })
   }
 
   private registerCookie(): void {
