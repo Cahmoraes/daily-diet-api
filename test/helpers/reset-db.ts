@@ -1,8 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { env } from '@/env'
-
-console.log('****')
-console.log(env.NODE_ENV)
+import '@/env'
 
 const prisma = new PrismaClient()
 

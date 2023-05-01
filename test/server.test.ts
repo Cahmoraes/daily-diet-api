@@ -1,5 +1,5 @@
 import { Server } from '@/Server'
-import { test, expect, beforeEach, beforeAll, afterAll } from 'vitest'
+import { test, beforeEach, beforeAll, afterAll } from 'vitest'
 import request from 'supertest'
 import { execSync } from 'node:child_process'
 
