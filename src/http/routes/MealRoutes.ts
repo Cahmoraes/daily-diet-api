@@ -4,6 +4,7 @@ import { CreateMealController } from '../controllers/meal/CreateMealController'
 import { UpdateMealController } from '../controllers/meal/UpdateMealController'
 import { DeleteMealController } from '../controllers/meal/DeleteMealController'
 import { FindMealByIdController } from '../controllers/meal/FindMealByIdController'
+import { verifyJWT } from '../middlewares/verifyJWT'
 
 export class MealRoutes {
   private _app?: FastifyInstance
@@ -38,15 +39,33 @@ export class MealRoutes {
   }
 
   private registerCreateMeal(): void {
-    this.app.post('/:userId', new CreateMealController().execute)
+    this.app.post(
+      '/:userId',
+      {
+        onRequest: [verifyJWT],
+      },
+      new CreateMealController().execute,
+    )
   }
 
   private registerUpdateMeal(): void {
-    this.app.put('/:userId/:mealId', new UpdateMealController().execute)
+    this.app.put(
+      '/:userId/:mealId',
+      {
+        onRequest: [verifyJWT],
+      },
+      new UpdateMealController().execute,
+    )
   }
 
   private registerDeleteMeal(): void {
-    this.app.delete('/:mealId', new DeleteMealController().execute)
+    this.app.delete(
+      '/:mealId',
+      {
+        onRequest: [verifyJWT],
+      },
+      new DeleteMealController().execute,
+    )
   }
 
   private registerFindMealById(): void {

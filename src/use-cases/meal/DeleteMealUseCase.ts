@@ -8,6 +8,11 @@ export class DeleteMealUseCase {
   constructor(private mealRepository: MealRepository) {}
 
   public async execute(params: DeleteMealUseCaseRequest): Promise<void> {
-    return this.mealRepository.delete(params)
+    try {
+      return await this.mealRepository.delete(params)
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
   }
 }

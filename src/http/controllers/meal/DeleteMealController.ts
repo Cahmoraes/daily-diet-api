@@ -1,4 +1,5 @@
 import { makeDeleteMealUseCase } from '@/use-cases/factories/meal/makeDeleteMealUseCase'
+import { assert } from '@/utils/assert'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
@@ -9,6 +10,8 @@ const deleteMealParam = z.object({
 type MealParamSchema = z.infer<typeof deleteMealParam>
 
 export class DeleteMealController {
+  private _reply?: FastifyReply
+
   constructor() {
     this.bindMethod()
   }
@@ -19,6 +22,7 @@ export class DeleteMealController {
 
   public async execute(request: FastifyRequest, reply: FastifyReply) {
     const { mealId } = this.parseParamRequestOrThrow(request.params)
+    this.reply = reply
     await this.deleteMeal({ mealId })
     return reply.status(201).send()
   }
@@ -32,12 +36,21 @@ export class DeleteMealController {
       await this.performCreateMeal(mealDTO)
     } catch (error) {
       console.log(error)
-      throw error
+      return this.reply.send({ message: 'Meal does not exist.' })
     }
   }
 
   private async performCreateMeal(mealDTO: MealParamSchema) {
     const createMealUseCase = makeDeleteMealUseCase()
-    createMealUseCase.execute(mealDTO)
+    await createMealUseCase.execute(mealDTO)
+  }
+
+  private get reply(): FastifyReply {
+    assert(this._reply, 'Reply is undefined [CreateUserController]')
+    return this._reply
+  }
+
+  private set reply(reply: FastifyReply) {
+    this._reply = reply
   }
 }
