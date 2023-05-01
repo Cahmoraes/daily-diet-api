@@ -24,11 +24,12 @@ export class AuthenticateUserController {
 
   public async execute(request: FastifyRequest, reply: FastifyReply) {
     const userParams = this.parseBodyRequestOrThrow(request.body)
-    console.log({ userParams })
     this.request = request
     this.reply = reply
+
     await this.authenticateUser(userParams)
     const token = await this.createJWT(userParams)
+
     return this.reply.status(201).send({ token })
   }
 
@@ -55,12 +56,22 @@ export class AuthenticateUserController {
   }
 
   private async authenticateUser(userParams: UserBodySchema) {
-    const authenticateUserUseCase = makeAuthenticateUserUseCase()
     try {
-      await authenticateUserUseCase.execute(userParams)
+      await this.performAuthenticateUser(userParams)
     } catch (error) {
-      this.reply.status(405).send({ message: 'User invalid' })
+      if (error instanceof Error) {
+        this.reply.status(405).send({ message: error.message })
+      }
+      throw error
     }
+  }
+
+  private async performAuthenticateUser(
+    userParams: UserBodySchema,
+  ): Promise<void> {
+    const authenticateUserUseCase = makeAuthenticateUserUseCase()
+    const userOrNull = await authenticateUserUseCase.execute(userParams)
+    if (!userOrNull) throw new Error('Invalid User')
   }
 
   private createJWT(userParams: UserBodySchema) {
