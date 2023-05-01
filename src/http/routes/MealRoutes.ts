@@ -3,7 +3,7 @@ import { FastifyInstance } from 'fastify'
 import { CreateMealController } from '../controllers/meal/CreateMealController'
 import { UpdateMealController } from '../controllers/meal/UpdateMealController'
 import { DeleteMealController } from '../controllers/meal/DeleteMealController'
-import { FindManyMealByUserController as GetAllMealByUserController } from '../controllers/meal/GetAllMealByUserController'
+import { FindMealByIdController } from '../controllers/meal/FindMealByIdController'
 
 export class MealRoutes {
   private _app?: FastifyInstance
@@ -21,11 +21,20 @@ export class MealRoutes {
     this.registerRoutes()
   }
 
+  get app(): FastifyInstance {
+    assert(this._app, 'FastifyInstance is undefined [MealRoutes]')
+    return this._app
+  }
+
+  set app(app: FastifyInstance) {
+    this._app = app
+  }
+
   private registerRoutes(): void {
     this.registerCreateMeal()
     this.registerUpdateMeal()
     this.registerDeleteMeal()
-    this.registerGetAllMealByUser()
+    this.registerFindMealById()
   }
 
   private registerCreateMeal(): void {
@@ -40,16 +49,7 @@ export class MealRoutes {
     this.app.delete('/:mealId', new DeleteMealController().execute)
   }
 
-  private registerGetAllMealByUser(): void {
-    this.app.get('/:userId', new GetAllMealByUserController().execute)
-  }
-
-  get app(): FastifyInstance {
-    assert(this._app, 'FastifyInstance is undefined [MealRoutes]')
-    return this._app
-  }
-
-  set app(app: FastifyInstance) {
-    this._app = app
+  private registerFindMealById(): void {
+    this.app.get('/:mealId', new FindMealByIdController().execute)
   }
 }

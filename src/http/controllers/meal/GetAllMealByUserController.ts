@@ -8,7 +8,7 @@ const findManyMealByUserParams = z.object({
 
 type MealParamSchema = z.infer<typeof findManyMealByUserParams>
 
-export class FindManyMealByUserController {
+export class GetAllMealByUserController {
   constructor() {
     this.bindMethod()
   }
