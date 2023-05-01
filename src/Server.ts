@@ -1,9 +1,10 @@
 import cookie from '@fastify/cookie'
-import Fastify from 'fastify'
+import Fastify, { FastifyError, FastifyReply, FastifyRequest } from 'fastify'
 import { env } from './env'
 import { UserRoutes } from './http/routes/UserRoutes'
 import { MealRoutes } from './http/routes/MealRoutes'
 import { ServerRoutes } from './http/routes/ServerRoutes'
+import { ZodError } from 'zod'
 
 export class ServerApp {
   private readonly app = Fastify({ logger: false })
@@ -13,6 +14,7 @@ export class ServerApp {
   public start(): void {
     this.registerCookie()
     this.registerRoutes()
+    this.registerErrorHandler()
     this.listen()
   }
 
@@ -28,6 +30,25 @@ export class ServerApp {
     this.app.register(new MealRoutes().initialize, {
       prefix: ServerRoutes.MEALS,
     })
+  }
+
+  private registerErrorHandler(): void {
+    this.app.setErrorHandler(this.performErrorHandler.bind(this))
+  }
+
+  private performErrorHandler(
+    error: FastifyError,
+    _: FastifyRequest,
+    reply: FastifyReply,
+  ) {
+    if (error instanceof ZodError) {
+      return reply
+        .status(400)
+        .send({ message: 'Validation error', issues: error.format() })
+    }
+    console.log('error handler')
+    console.log(error.message)
+    return reply.status(500).send({ message: 'Internal server error.' })
   }
 
   private async listen(): Promise<void> {
