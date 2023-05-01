@@ -1,12 +1,22 @@
+import { Meal } from '@prisma/client'
 import { MealDTO } from '@/interfaces/MealDTO'
 import {
   DeleteMealParams,
+  GetAllMealByUserParams,
   MealRepository,
   UpdateMealParams,
 } from '../MealRepository'
 import { prisma } from '@/lib/prisma'
 
 export class PrismaMealRepository implements MealRepository {
+  async getAllByUser(params: GetAllMealByUserParams): Promise<Meal[]> {
+    return prisma.meal.findMany({
+      where: {
+        userId: params.userId,
+      },
+    })
+  }
+
   async delete(params: DeleteMealParams): Promise<void> {
     await prisma.meal.delete({
       where: {

@@ -3,6 +3,7 @@ import { FastifyInstance } from 'fastify'
 import { CreateMealController } from '../controllers/meal/CreateMealController'
 import { UpdateMealController } from '../controllers/meal/UpdateMealController'
 import { DeleteMealController } from '../controllers/meal/DeleteMealController'
+import { FindManyMealByUserController as GetAllMealByUserController } from '../controllers/meal/GetAllMealByUserController'
 
 export class MealRoutes {
   private _app?: FastifyInstance
@@ -24,6 +25,7 @@ export class MealRoutes {
     this.registerCreateMeal()
     this.registerUpdateMeal()
     this.registerDeleteMeal()
+    this.registerGetAllMealByUser()
   }
 
   private registerCreateMeal(): void {
@@ -36,6 +38,10 @@ export class MealRoutes {
 
   private registerDeleteMeal(): void {
     this.app.delete('/:mealId', new DeleteMealController().execute)
+  }
+
+  private registerGetAllMealByUser(): void {
+    this.app.get('/:userId', new GetAllMealByUserController().execute)
   }
 
   get app(): FastifyInstance {
