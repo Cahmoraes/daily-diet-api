@@ -11,11 +11,10 @@ datasource db {
 }
 
 model User {
-  id        String @id @default(uuid())
-  name      String @unique
-  email     String @unique
-  sessionId String @unique
-  meal      Meal[]
+  id    String @id @default(uuid())
+  name  String @unique
+  email String @unique
+  meal  Meal[]
 
   @@map("users")
 }

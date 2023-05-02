@@ -1,10 +1,11 @@
 import { makeAuthenticateUserUseCase } from '@/use-cases/factories/user/makeAuthenticateUserUseCase'
 import { assert } from '@/utils/assert'
+import { User } from '@prisma/client'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
 const createUserBodySchema = z.object({
-  name: z.string(),
+  name: z.string().min(3, 'Minimum 3 characters'),
   email: z.string(),
 })
 
@@ -27,10 +28,10 @@ export class AuthenticateUserController {
     this.request = request
     this.reply = reply
 
-    await this.authenticateUser(userParams)
-    const token = await this.createJWT(userParams)
+    const user = await this.authenticateUser(userParams)
+    const token = await this.createJWT(user)
 
-    return this.reply.status(201).send({ token })
+    return this.reply.status(200).send({ token })
   }
 
   private parseBodyRequestOrThrow(body: unknown): UserBodySchema {
@@ -55,9 +56,9 @@ export class AuthenticateUserController {
     this._reply = reply
   }
 
-  private async authenticateUser(userParams: UserBodySchema) {
+  private async authenticateUser(userParams: UserBodySchema): Promise<User> {
     try {
-      await this.performAuthenticateUser(userParams)
+      return this.performAuthenticateUser(userParams)
     } catch (error) {
       if (error instanceof Error) {
         this.reply.status(405).send({ message: error.message })
@@ -68,18 +69,21 @@ export class AuthenticateUserController {
 
   private async performAuthenticateUser(
     userParams: UserBodySchema,
-  ): Promise<void> {
+  ): Promise<User> {
     const authenticateUserUseCase = makeAuthenticateUserUseCase()
     const userOrNull = await authenticateUserUseCase.execute(userParams)
     if (!userOrNull) throw new Error('Invalid User')
+    return userOrNull
   }
 
-  private createJWT(userParams: UserBodySchema) {
+  private createJWT(user: User) {
     return this.reply.jwtSign(
-      {},
+      {
+        id: user.id,
+      },
       {
         sign: {
-          sub: userParams.email,
+          sub: user.email,
         },
       },
     )

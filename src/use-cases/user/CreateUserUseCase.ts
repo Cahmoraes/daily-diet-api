@@ -3,7 +3,6 @@ import { UserRepository } from '@/repositories/UserRepository'
 interface CreateUserUseCaseRequest {
   name: string
   email: string
-  sessionId: string
 }
 
 export class CreateUserUseCase {
@@ -12,12 +11,10 @@ export class CreateUserUseCase {
   public async execute({
     name,
     email,
-    sessionId,
   }: CreateUserUseCaseRequest): Promise<void> {
     return this.userRepository.create({
       name,
       email,
-      sessionId,
     })
   }
 }

@@ -1,5 +1,6 @@
 import { UserRepository } from '@/repositories/UserRepository'
 import { User } from '@prisma/client'
+
 interface AuthenticateUserUseCaseRequest {
   name: string
   email: string

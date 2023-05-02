@@ -11,12 +11,10 @@ const createMealBodySchema = z.object({
   inDiet: z.boolean(),
 })
 
-const createMealParam = z.object({
-  userId: z.string(),
-})
+const createUserIdSchema = z.string().uuid()
 
 type MealBodySchema = z.infer<typeof createMealBodySchema>
-type MealParamSchema = z.infer<typeof createMealParam>
+type UserIdData = z.infer<typeof createUserIdSchema>
 
 export class CreateMealController {
   constructor() {
@@ -29,12 +27,8 @@ export class CreateMealController {
 
   public async execute(request: FastifyRequest, reply: FastifyReply) {
     const mealBody = this.parseBodyRequestOrThrow(request.body)
-    const { userId } = this.parseParamRequestOrThrow(request.params)
+    const userId = this.parseParamRequestOrThrow(request.user.id)
 
-    // await request.jwtVerify()
-    console.log(request.headers.authorization)
-
-    console.log({ userId, mealBody })
     await this.createMeal({ userId, ...mealBody })
 
     return reply.status(201).send()
@@ -44,8 +38,8 @@ export class CreateMealController {
     return createMealBodySchema.parse(body)
   }
 
-  private parseParamRequestOrThrow(params: unknown): MealParamSchema {
-    return createMealParam.parse(params)
+  private parseParamRequestOrThrow(params: unknown): UserIdData {
+    return createUserIdSchema.parse(params)
   }
 
   private async createMeal(mealDTO: MealDTO) {
@@ -59,6 +53,6 @@ export class CreateMealController {
 
   private async performCreateMeal(mealDTO: MealDTO) {
     const createMealUseCase = makeCreateMealUseCase()
-    createMealUseCase.execute(mealDTO)
+    await createMealUseCase.execute(mealDTO)
   }
 }
