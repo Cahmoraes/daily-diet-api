@@ -3,6 +3,7 @@ import { FastifyInstance } from 'fastify'
 import { CreateUserController } from '../controllers/user/CreateUserController'
 import { GetAllMealByUserController } from '../controllers/meal/GetAllMealByUserController'
 import { AuthenticateUserController } from '../controllers/user/AuthenticateUserController'
+import { verifyJWT } from '../middlewares/verifyJWT'
 
 export class UserRoutes {
   private _app?: FastifyInstance
@@ -40,7 +41,13 @@ export class UserRoutes {
   }
 
   private registerGetAllMealByUser(): void {
-    this.app.get('/:userId/meals', new GetAllMealByUserController().execute)
+    this.app.get(
+      '/meals',
+      {
+        onRequest: [verifyJWT],
+      },
+      new GetAllMealByUserController().execute,
+    )
   }
 
   private registerAuthenticateUser(): void {

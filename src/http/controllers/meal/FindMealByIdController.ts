@@ -20,7 +20,7 @@ export class FindMealByIdController {
   public async execute(request: FastifyRequest, reply: FastifyReply) {
     const { mealId } = this.parseParamRequestOrThrow(request.params)
     const { meal } = await this.findMealById({ mealId })
-    return reply.status(201).send({ meal })
+    return reply.status(200).send({ meal })
   }
 
   private parseParamRequestOrThrow(params: unknown): MealParamSchema {

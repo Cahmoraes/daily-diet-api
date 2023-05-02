@@ -2,11 +2,9 @@ import { makeGetAllMealByUserUseCase } from '@/use-cases/factories/meal/makeGetA
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
-const findManyMealByUserParams = z.object({
-  userId: z.string(),
-})
+const createUserIdSchema = z.string().uuid()
 
-type MealParamSchema = z.infer<typeof findManyMealByUserParams>
+type UserIdData = z.infer<typeof createUserIdSchema>
 
 export class GetAllMealByUserController {
   constructor() {
@@ -18,26 +16,26 @@ export class GetAllMealByUserController {
   }
 
   public async execute(request: FastifyRequest, reply: FastifyReply) {
-    const { userId } = this.parseParamRequestOrThrow(request.params)
-    const { meals } = await this.findManyMealByUser({ userId })
-    return reply.status(201).send({ meals })
+    const userId = this.parseUserIdOrThrow(request.user.id)
+    const { meals } = await this.findManyMealByUser(userId)
+    return reply.status(200).send({ meals })
   }
 
-  private parseParamRequestOrThrow(params: unknown): MealParamSchema {
-    return findManyMealByUserParams.parse(params)
+  private parseUserIdOrThrow(params: unknown): UserIdData {
+    return createUserIdSchema.parse(params)
   }
 
-  private async findManyMealByUser(mealDTO: MealParamSchema) {
+  private async findManyMealByUser(userId: UserIdData) {
     try {
-      return this.performFindManyMealByUser(mealDTO)
+      return this.performFindManyMealByUser(userId)
     } catch (error) {
       console.log(error)
       throw error
     }
   }
 
-  private async performFindManyMealByUser(mealDTO: MealParamSchema) {
+  private async performFindManyMealByUser(userId: UserIdData) {
     const getAllMealByUerUseCase = makeGetAllMealByUserUseCase()
-    return getAllMealByUerUseCase.execute(mealDTO)
+    return getAllMealByUerUseCase.execute({ userId })
   }
 }

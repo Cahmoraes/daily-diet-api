@@ -50,7 +50,7 @@ export class MealRoutes {
 
   private registerUpdateMeal(): void {
     this.app.put(
-      '/:userId/:mealId',
+      '/:mealId',
       {
         onRequest: [verifyJWT],
       },

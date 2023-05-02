@@ -7,6 +7,7 @@ export interface UpdateMealParams extends MealDTO {
 
 export interface DeleteMealParams {
   mealId: string
+  userId: string
 }
 
 export interface GetAllMealByUserParams {

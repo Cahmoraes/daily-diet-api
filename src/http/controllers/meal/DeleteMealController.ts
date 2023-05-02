@@ -6,8 +6,14 @@ import { z } from 'zod'
 const deleteMealParam = z.object({
   mealId: z.string(),
 })
+const userIdRequestSchema = z.string().uuid()
 
+type UserIdRequestData = z.infer<typeof userIdRequestSchema>
 type MealParamSchema = z.infer<typeof deleteMealParam>
+
+interface DeleteMealParams extends MealParamSchema {
+  userId: UserIdRequestData
+}
 
 export class DeleteMealController {
   private _reply?: FastifyReply
@@ -21,17 +27,22 @@ export class DeleteMealController {
   }
 
   public async execute(request: FastifyRequest, reply: FastifyReply) {
+    const userId = this.parseUserIdOrThrow(request.user.id)
     const { mealId } = this.parseParamRequestOrThrow(request.params)
     this.reply = reply
-    await this.deleteMeal({ mealId })
-    return reply.status(201).send()
+    await this.deleteMeal({ mealId, userId })
+    return reply.status(200).send()
   }
 
   private parseParamRequestOrThrow(params: unknown): MealParamSchema {
     return deleteMealParam.parse(params)
   }
 
-  private async deleteMeal(mealDTO: MealParamSchema) {
+  private parseUserIdOrThrow(params: unknown): UserIdRequestData {
+    return userIdRequestSchema.parse(params)
+  }
+
+  private async deleteMeal(mealDTO: DeleteMealParams) {
     try {
       await this.performCreateMeal(mealDTO)
     } catch (error) {
@@ -40,7 +51,7 @@ export class DeleteMealController {
     }
   }
 
-  private async performCreateMeal(mealDTO: MealParamSchema) {
+  private async performCreateMeal(mealDTO: DeleteMealParams) {
     const createMealUseCase = makeDeleteMealUseCase()
     await createMealUseCase.execute(mealDTO)
   }

@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
-import { makeAuthenticateUserFactory } from '@/use-cases/factories/user/makeAuthenticateUserFactory'
+import { makeCreateUserUseCase } from '@/use-cases/factories/user/makeCreateUserUseCase'
 
 const createUserBodySchema = z.object({
   name: z.string(),
@@ -10,9 +10,6 @@ const createUserBodySchema = z.object({
 type UserBodySchema = z.infer<typeof createUserBodySchema>
 
 export class CreateUserController {
-  private _request?: FastifyRequest
-  private _reply?: FastifyReply
-
   constructor() {
     this.bindMethod()
   }
@@ -41,7 +38,8 @@ export class CreateUserController {
   }
 
   private async performCreateUser(userParams: UserBodySchema): Promise<void> {
-    const authenticate = makeAuthenticateUserFactory()
-    await authenticate.execute({ ...userParams })
+    const authenticate = makeCreateUserUseCase()
+    const user = await authenticate.execute({ ...userParams })
+    console.log(user)
   }
 }

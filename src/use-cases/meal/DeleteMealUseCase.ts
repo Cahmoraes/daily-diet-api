@@ -2,6 +2,7 @@ import { MealRepository } from '@/repositories/MealRepository'
 
 interface DeleteMealUseCaseRequest {
   mealId: string
+  userId: string
 }
 
 export class DeleteMealUseCase {

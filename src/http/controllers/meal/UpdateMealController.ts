@@ -10,14 +10,14 @@ const editMealBodySchema = z.object({
   hours: z.string(),
   inDiet: z.boolean(),
 })
-
-const editMealParam = z.object({
-  userId: z.string(),
-  mealId: z.string(),
+const userIdRequestSchema = z.string().uuid()
+const mealIdParamSchema = z.object({
+  mealId: z.string().uuid(),
 })
 
 type MealBodySchema = z.infer<typeof editMealBodySchema>
-type MealParamSchema = z.infer<typeof editMealParam>
+type UserIdRequestData = z.infer<typeof userIdRequestSchema>
+type MealIdParamsData = z.infer<typeof mealIdParamSchema>
 type UpdateMealParams = MealDTO & {
   mealId: string
 }
@@ -32,18 +32,23 @@ export class UpdateMealController {
   }
 
   public async execute(request: FastifyRequest, reply: FastifyReply) {
+    const userId = this.parseUserIdOrThrow(request.user.id)
     const mealBody = this.parseBodyRequestOrThrow(request.body)
-    const { userId, mealId } = this.parseParamRequestOrThrow(request.params)
+    const { mealId } = this.parseMealIdParamOrThrow(request.params)
     await this.createMeal({ userId, mealId, ...mealBody })
-    return reply.status(201).send()
+    return reply.status(204).send()
+  }
+
+  private parseMealIdParamOrThrow(params: unknown): MealIdParamsData {
+    return mealIdParamSchema.parse(params)
   }
 
   private parseBodyRequestOrThrow(body: unknown): MealBodySchema {
     return editMealBodySchema.parse(body)
   }
 
-  private parseParamRequestOrThrow(params: unknown): MealParamSchema {
-    return editMealParam.parse(params)
+  private parseUserIdOrThrow(params: unknown): UserIdRequestData {
+    return userIdRequestSchema.parse(params)
   }
 
   private async createMeal(updateMealParams: UpdateMealParams) {

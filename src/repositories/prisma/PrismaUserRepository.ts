@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { User } from '@prisma/client'
 
 export class PrismaUserRepository implements UserRepository {
-  authenticate(params: AuthenticateUserParams): Promise<User | null> {
+  async authenticate(params: AuthenticateUserParams): Promise<User | null> {
     return prisma.user.findUnique({
       where: {
         email: params.email,
