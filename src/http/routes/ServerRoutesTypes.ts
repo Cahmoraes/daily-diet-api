@@ -1,4 +1,4 @@
-export enum ServerRoutes {
+export enum ServerRoutesTypes {
   'USERS' = 'users',
   'MEALS' = 'meals',
 }

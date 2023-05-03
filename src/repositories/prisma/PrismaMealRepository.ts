@@ -9,6 +9,10 @@ import {
 import { prisma } from '@/lib/prisma'
 
 export class PrismaMealRepository implements MealRepository {
+  async countByUserId(userId: string): Promise<number> {
+    return prisma.meal.count({ where: { userId } })
+  }
+
   async findById(mealId: string): Promise<Meal | null> {
     return prisma.meal.findUnique({
       where: {

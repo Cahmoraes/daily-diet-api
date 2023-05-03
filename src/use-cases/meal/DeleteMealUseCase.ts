@@ -10,7 +10,7 @@ export class DeleteMealUseCase {
 
   public async execute(params: DeleteMealUseCaseRequest): Promise<void> {
     try {
-      return await this.mealRepository.deleteMealById(params)
+      return await this.mealRepository.deleteMealByUserId(params)
     } catch (error) {
       console.log(error)
       throw error

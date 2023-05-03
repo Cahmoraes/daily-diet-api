@@ -14,5 +14,5 @@ export interface DeleteMealByIdParams {
 export interface UserRepository {
   create(params: UserDTO): Promise<void>
   authenticate(params: AuthenticateUserParams): Promise<User | null>
-  deleteMealById(params: DeleteMealByIdParams): Promise<void>
+  deleteMealByUserId(params: DeleteMealByIdParams): Promise<void>
 }

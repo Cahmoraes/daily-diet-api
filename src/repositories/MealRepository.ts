@@ -20,4 +20,5 @@ export interface MealRepository {
   delete(params: DeleteMealParams): Promise<void>
   getAllByUser(params: GetAllMealByUserParams): Promise<Meal[]>
   findById(mealId: string): Promise<Meal | null>
+  countByUserId(userId: string): Promise<number>
 }

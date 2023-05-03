@@ -4,6 +4,7 @@ import { CreateUserController } from '../controllers/user/CreateUserController'
 import { GetAllMealByUserController } from '../controllers/meal/GetAllMealByUserController'
 import { AuthenticateUserController } from '../controllers/user/AuthenticateUserController'
 import { verifyJWT } from '../middlewares/verifyJWT'
+import { GetUserMetricsController } from '../controllers/user/GetUserMetricsController'
 
 export class UserRoutes {
   private _app?: FastifyInstance
@@ -34,6 +35,7 @@ export class UserRoutes {
     this.registerCreateUser()
     this.registerGetAllMealByUser()
     this.registerAuthenticateUser()
+    this.registerGetUserMetrics()
   }
 
   private registerCreateUser() {
@@ -52,5 +54,15 @@ export class UserRoutes {
 
   private registerAuthenticateUser(): void {
     this.app.post('/session', new AuthenticateUserController().execute)
+  }
+
+  private registerGetUserMetrics(): void {
+    this.app.get(
+      '/metrics',
+      {
+        onRequest: [verifyJWT],
+      },
+      new GetUserMetricsController().execute,
+    )
   }
 }

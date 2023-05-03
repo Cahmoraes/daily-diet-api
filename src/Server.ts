@@ -9,7 +9,7 @@ import Fastify, {
 import { env } from './env'
 import { UserRoutes } from './http/routes/UserRoutes'
 import { MealRoutes } from './http/routes/MealRoutes'
-import { ServerRoutes } from './http/routes/ServerRoutes'
+import { ServerRoutesTypes } from './http/routes/ServerRoutesTypes'
 import { ZodError } from 'zod'
 
 export class Server {
@@ -37,11 +37,11 @@ export class Server {
 
   private async registerRoutes(): Promise<void> {
     this.app.register(new UserRoutes().initialize, {
-      prefix: ServerRoutes.USERS,
+      prefix: ServerRoutesTypes.USERS,
     })
 
     this.app.register(new MealRoutes().initialize, {
-      prefix: ServerRoutes.MEALS,
+      prefix: ServerRoutesTypes.MEALS,
     })
   }
 
