@@ -11,8 +11,25 @@ export interface DeleteMealByIdParams {
   mealId: string
 }
 
+export interface GetTotalMealsInDietByDateParams {
+  userId: string
+  date: string
+}
+
+export interface GetTotalMealsInDietByDateResponse {
+  _count: {
+    inDiet: number
+  }
+  date: string
+}
+
 export interface UserRepository {
   create(params: UserDTO): Promise<void>
   authenticate(params: AuthenticateUserParams): Promise<User | null>
   deleteMealByUserId(params: DeleteMealByIdParams): Promise<void>
+  getTotalMealsInDiet(userId: string): Promise<number>
+  getTotalMealsOffDiet(userId: string): Promise<number>
+  getTotalMealsInDietByDate(
+    userId: string,
+  ): Promise<GetTotalMealsInDietByDateResponse[]>
 }

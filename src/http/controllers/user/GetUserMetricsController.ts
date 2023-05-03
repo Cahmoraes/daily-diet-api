@@ -16,7 +16,7 @@ export class GetUserMetricsController {
 
   public async execute(request: FastifyRequest, reply: FastifyReply) {
     const userId = this.parseUserIdOrThrow(request.user.id)
-    const { totalRegisteredMeals } = await this.getUserMetrics(userId)
+    const totalRegisteredMeals = await this.getUserMetrics(userId)
     return reply.status(200).send({ totalRegisteredMeals })
   }
 

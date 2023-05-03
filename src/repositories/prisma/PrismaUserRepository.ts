@@ -38,4 +38,40 @@ export class PrismaUserRepository implements UserRepository {
       },
     })
   }
+
+  async getTotalMealsInDiet(userId: string): Promise<number> {
+    return prisma.meal.count({
+      where: {
+        userId,
+        inDiet: false,
+      },
+    })
+  }
+
+  async getTotalMealsOffDiet(userId: string): Promise<number> {
+    return prisma.meal.count({
+      where: {
+        userId,
+        inDiet: false,
+      },
+    })
+  }
+
+  async getTotalMealsInDietByDate(userId: string) {
+    return prisma.meal.groupBy({
+      by: ['date'],
+      _count: {
+        inDiet: true,
+      },
+      where: {
+        userId,
+        inDiet: true,
+      },
+      orderBy: {
+        _count: {
+          inDiet: 'desc',
+        },
+      },
+    })
+  }
 }
