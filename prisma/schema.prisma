@@ -27,8 +27,8 @@ model Meal {
   date        String
   hours       String
 
-  user   User?   @relation(fields: [userId], references: [id])
-  userId String?
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
   @@map("meals")
 }

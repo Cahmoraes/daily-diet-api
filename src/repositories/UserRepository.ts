@@ -6,7 +6,13 @@ export interface AuthenticateUserParams {
   email: string
 }
 
+export interface DeleteMealByIdParams {
+  userId: string
+  mealId: string
+}
+
 export interface UserRepository {
   create(params: UserDTO): Promise<void>
   authenticate(params: AuthenticateUserParams): Promise<User | null>
+  deleteMealById(params: DeleteMealByIdParams): Promise<void>
 }

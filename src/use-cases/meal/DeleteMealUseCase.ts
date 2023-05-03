@@ -1,4 +1,4 @@
-import { MealRepository } from '@/repositories/MealRepository'
+import { UserRepository } from '@/repositories/UserRepository'
 
 interface DeleteMealUseCaseRequest {
   mealId: string
@@ -6,11 +6,11 @@ interface DeleteMealUseCaseRequest {
 }
 
 export class DeleteMealUseCase {
-  constructor(private mealRepository: MealRepository) {}
+  constructor(private mealRepository: UserRepository) {}
 
   public async execute(params: DeleteMealUseCaseRequest): Promise<void> {
     try {
-      return await this.mealRepository.delete(params)
+      return await this.mealRepository.deleteMealById(params)
     } catch (error) {
       console.log(error)
       throw error
