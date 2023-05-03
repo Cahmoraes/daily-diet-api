@@ -1,5 +1,6 @@
 import { MealDTO } from '@/interfaces/MealDTO'
 import { makeUpdateMealUseCase } from '@/use-cases/factories/meal/makeUpdateMealUseCase'
+import { assert } from '@/utils/assert'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
@@ -23,6 +24,8 @@ type UpdateMealParams = MealDTO & {
 }
 
 export class UpdateMealController {
+  private _reply?: FastifyReply
+
   constructor() {
     this.bindMethod()
   }
@@ -35,6 +38,8 @@ export class UpdateMealController {
     const userId = this.parseUserIdOrThrow(request.user.id)
     const mealBody = this.parseBodyRequestOrThrow(request.body)
     const { mealId } = this.parseMealIdParamOrThrow(request.params)
+    this._reply = reply
+
     await this.createMeal({ userId, mealId, ...mealBody })
     return reply.status(204).send()
   }
@@ -56,12 +61,21 @@ export class UpdateMealController {
       await this.performCreateMeal(updateMealParams)
     } catch (error) {
       console.log(error)
-      throw error
+      throw this.reply.send({ message: 'Meal does not exist.' })
     }
   }
 
   private async performCreateMeal(mealDTO: UpdateMealParams) {
     const createMealUseCase = makeUpdateMealUseCase()
     createMealUseCase.execute(mealDTO)
+  }
+
+  private get reply(): FastifyReply {
+    assert(this._reply, 'Reply is undefined [CreateUserController]')
+    return this._reply
+  }
+
+  private set reply(reply: FastifyReply) {
+    this._reply = reply
   }
 }
