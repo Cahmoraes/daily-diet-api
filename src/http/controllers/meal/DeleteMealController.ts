@@ -57,7 +57,7 @@ export class DeleteMealController {
   }
 
   private get reply(): FastifyReply {
-    assert(this._reply, 'Reply is undefined [CreateUserController]')
+    assert(this._reply, 'Reply is undefined [DeleteMealController]')
     return this._reply
   }
 
